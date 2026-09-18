@@ -4,7 +4,7 @@ import java.util.Random;
 public class QuickSort {
     private static final Random random = new Random();
 
-    private static void sort(int arr[], Metrics metrics) {
+    static void sort(int arr[], Metrics metrics) {
         if (arr == null || arr.length <= 1) {
             return;
         }
