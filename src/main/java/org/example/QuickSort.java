@@ -4,30 +4,32 @@ import java.util.Random;
 public class QuickSort {
     private static final Random random = new Random();
 
-    private static void sort(int arr[]) {
+    private static void sort(int arr[], Metrics metrics) {
         if (arr == null || arr.length <= 1) {
             return;
         }
-        quickSort(arr, 0, arr.length - 1);
+        quickSort(arr, 0, arr.length - 1, metrics);
     }
 
 
-    private static void quickSort(int[] arr, int left, int right) {
+    private static void quickSort(int[] arr, int left, int right, Metrics metrics) {
+        metrics.enterRecursion();
         while (left < right) {
-            int[] bounds = partition(arr, left, right);
+            int[] bounds = partition(arr, left, right, metrics);
             int lt = bounds[0];
             int gt = bounds[1];
             int leftSize = lt - left;
             int rightSize = right - gt;
 
             if (leftSize < rightSize) {
-                quickSort(arr, left, lt - 1);
+                quickSort(arr, left, lt - 1, metrics);
                 left = gt + 1;
             } else {
-                quickSort(arr, gt + 1, right);
+                quickSort(arr, gt + 1, right, metrics);
                 right = lt - 1;
             }
         }
+        metrics.exitRecursion();
 
     }
 
@@ -37,7 +39,7 @@ public class QuickSort {
         arr[j] = temp;
     }
 
-    private static int[] partition(int[] arr, int left, int right) {
+    private static int[] partition(int[] arr, int left, int right, Metrics metrics) {
         int pivotIndex = left + random.nextInt(right - left + 1);
         int pivot = arr[pivotIndex];
         swap(arr, left, pivotIndex);
@@ -46,17 +48,20 @@ public class QuickSort {
         int gt = right;
 
         while (i <= gt) {
+            metrics.addComparison();
             if (arr[i] < pivot) {
                 swap(arr, i, lt);
                 lt++;
                 i++;
-            } else if(arr[i] > pivot){
-                swap(arr, i, gt);
-                gt--;
             } else {
-                i++;
+                metrics.addComparison();
+                if (arr[i] > pivot) {
+                    swap(arr, i, gt);
+                    gt--;
+                } else {
+                    i++;
+                }
             }
-
         }
         return new int[]{lt, gt};
     }
